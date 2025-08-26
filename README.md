@@ -46,6 +46,7 @@ Code Explained
 Here is a line-by-line breakdown of the code from the Jupyter Notebook to help you understand its functionality.
 
 Section 1: 
+
 Initial Setup and Dependencies
 !pip install crewai crewai[tools] google-generativeai python-dotenv
 !pip install langchain_google_genai
@@ -55,6 +56,7 @@ Initial Setup and Dependencies
 langchain_google_genai: This library provides the integration between Google's generative AI models and the LangChain framework, which is often used under the hood by CrewAI.
 
 Section 2: 
+
 Environment Variables and API Key Configuration
 import os
 from dotenv import load_dotenv
@@ -68,12 +70,14 @@ load_dotenv(): This function loads the variables from your .env file, making the
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY"): This line sets the Google API key as an environment variable for the current session, which is a secure way to use your API key without hard-coding it in the script.
 
 Section 3: 
+
 Defining Tools for the Agents
 from crewai_tools import WebsiteSearchTool
 
 from crewai_tools import WebsiteSearchTool: This line imports a specialized tool that enables an agent to browse and search the content of a website.
 
 Section 4: 
+
 Instantiating Agents
 from crewai import Agent
 senior_job_researcher = Agent(
@@ -106,6 +110,7 @@ senior_job_researcher: This agent is defined with a specific role and goal to se
 job_aggregator: This agent is responsible for taking the raw output from the first agent and cleaning it up. Its goal is to extract and structure the data into a readable format.
 
 Section 5: 
+
 Defining Tasks for the Agents
 from crewai import Task
 google_job_search_task = Task(
@@ -135,6 +140,7 @@ google_job_search_task: This task assigns a detailed description of the job sear
 job_aggregation_task: This task provides instructions for the job_aggregator agent on what information to extract from the content provided by the first agent.
 
 Section 6: 
+
 Creating and Running the Crew
 from crewai import Crew, Process
 job_search_crew = Crew(
