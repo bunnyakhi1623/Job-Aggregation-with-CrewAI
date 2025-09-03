@@ -1,180 +1,95 @@
-# Job-Aggregation-with-CrewAI
-This project demonstrates a simple but powerful application of the CrewAI framework. It uses a team of specialized AI agents to automate the process of finding and aggregating job listings from a specific website, in this case, Google's official careers page.
+##Intelligent Job Scraper: A Dynamic Data Collection System##
 
-By defining a series of sequential tasks, the agents work collaboratively to browse a website, filter results, and extract structured data, showcasing the potential of agentic frameworks for web scraping and data processing.
+Project Overview:
 
-Features
-Multi-Agent Collaboration: A "Senior Job Researcher" agent works with a "Job Aggregator" agent to complete a complex task.
+This project is an advanced, AI-powered solution for a common but complex task: scraping job listings from corporate career portals. Unlike traditional, brittle scraping tools that fail when a website's structure changes, this system is designed to be intelligent and resilient. It uses a multi-agent framework to navigate, analyze, and extract data from modern, dynamic websites, providing a reliable and continuous stream of job market data.
 
-Website Browsing: Utilizes a WebsiteSearchTool to navigate and read content from a specified URL.
+The system is built to address the reality that today's career pages are not static HTML documents. They are sophisticated web applications that load content dynamically using JavaScript, making a traditional, simple scraping approach fundamentally inadequate.
 
-Data Extraction: The aggregator agent is designed to parse unstructured HTML content and extract key information like job titles, locations, and application links.
+Architectural Design and Key Components:
 
-Sequential Processing: Tasks are executed in a defined order, with the output of one agent serving as the input for the next.
+This project is powered by a state-of-the-art AI stack, with each component playing a critical role in creating a robust and flexible scraping pipeline.
 
-Secure API Key Management: Uses python-dotenv to handle API keys securely via a .env file.
+CrewAI: 
 
-Prerequisites
-Before running this project, ensure you have the following installed:
+The Master Orchestrator At the heart of this system is CrewAI, which acts as the master orchestrator. Its primary purpose is to define and manage the workflow. It allows you to transform a high-level goal, such as "scrape jobs from Google and Microsoft," into a series of actionable, intelligent tasks for specialized agents. CrewAI ensures that each task is executed in the correct order, handles the output from one agent as input for the next, and provides a clear, collaborative structure for the entire operation. This approach moves beyond a simple linear script to a dynamic, goal-oriented system.
 
-Python 3.8 or higher
+LangGraph:
 
-pip (Python package installer)
+Enabling Complex Logic and ResilienceLangGraph is the backbone that gives this system its power and resilience. It allows for the creation of a graph-like workflow where agents can pass information back and forth in a non-linear fashion. This is crucial for handling the unpredictability of the web. For example:
 
-Setup and Installation
+Error Handling: 
+
+If an initial scraping attempt fails due to a network error or a page structure change, LangGraph can define a new path for the agent to take, such as retrying the request or attempting an alternative URL.
+
+Decision Making: 
+
+It enables the system to make dynamic decisions. A "Planning Agent" might determine the best URL to target, and based on the results, the "Scraping Agent" can decide whether to proceed with data extraction or return to the planner for a different task.
+
+State Management: 
+
+LangGraph maintains the state of the conversation and the scraping process. This means the system can pick up exactly where it left off, even after complex, multi-step operations.
+
+Gemini 2.5 Flash: 
+
+The Engine of Intelligence, The intelligence of the agents is powered by the Gemini 2.5 Flash large language model. This model was chosen for its exceptional speed and efficiency. Its "Flash" designation signifies its low latency, which is essential for a real-time data collection system. It allows the agents to process instructions, analyze web content, and make decisions with minimal delay. Gemini 2.5 Flash enables the agents to understand and interpret complex web structures and text, which is vital for accurately identifying job listings and key data points.
+
+A Two-Agent System: 
+
+Strategic and Tactical Execution To ensure a clear separation of concerns and enhance efficiency, the project uses a two-agent model:
+
+The Planning Agent (Job Search Manager): 
+
+This agent is the strategic component. Its responsibility is to take high-level requests (e.g., "Find all US jobs for Amazon") and break them down into a concrete plan. It identifies the target URLs, determines the best approach for each site, and orchestrates the overall process.
+
+The Scraping Agent: 
+
+This agent is the tactical executor. It receives specific instructions from the Planning Agent, navigates to the designated URLs, and handles the low-level technical work of interacting with the webpage and extracting the raw data. This separation makes the system more modular and easier to maintain.
+
+The Role of API Keys:
+
+API keys are a fundamental and necessary security measure. They serve to authenticate the application with the Gemini 2.5 Flash service, ensuring that only authorized requests are processed. These keys are a standard practice for controlling access, monitoring usage, and managing the costs associated with cloud-based AI services.
+
+Analysis of Scraping Targets (Attached File)
+The list of URLs provided to this project is not a simple collection of static pages. They represent a significant technical challenge, validating the use of a sophisticated, AI-driven system.
+
+Google: 
+
+The Google careers URL https://www.google.com/about/careers/applications/jobs/results/ is a prime example of a dynamic, search-driven page that loads job data based on parameters in the URL. A basic scraper would fail to retrieve this content.   
+
+Meta: 
+
+Similarly, the Meta careers site at https://www.metacareers.com/jobs/ is a dynamic, content-changing platform that features interactive components and APIs to display roles.
+
+Amazon: 
+
+Amazon presents a dual-domain challenge, with https://www.amazon.jobs/en// for corporate roles and https://hiring.amazon.com/ for hourly and warehouse positions. A robust solution must be able to intelligently query both domains to get a complete picture of hiring activity. The hiring page uses a "Search jobs near you" function, which is a clear indicator of a dynamic, on-demand data retrieval system.   
+
+Microsoft, Infosys, Accenture, and TCS: These companies also use complex, multi-layered websites that often act as marketing funnels, directing users to deeper, JavaScript-driven job search portals. The Infosys digitalcareers portal, for instance, is the true data repository, which is distinct from the main company site.   
+
+This project's architecture is specifically designed to handle these complexities, ensuring that it can successfully navigate these diverse digital landscapes and provide accurate, reliable data.
+
+Getting Started To get the project up and running, follow these steps:
+
 Clone the repository:
 
-git clone [your_repository_url]
-cd [your_repository_folder]
+Bash
 
-Install the dependencies:
+git clone [your-repo-link]
+cd [your-repo-name]
+Install dependencies:
 
-pip install crewai crewai[tools] google-generativeai python-dotenv
-pip install langchain_google_genai
+Bash
 
-Set up your Google API Key:
+pip install -r requirements.txt
+Set up API keys:
+Create a .env file in the project's root directory and add your Gemini API key:
 
-Create a file named .env in the root directory of your project.
+GEMINI_API_KEY="your_api_key_here"
+Run the scraper:
 
-Add your Google API Key to the file in the following format:
+Bash
 
-GOOGLE_API_KEY="your_api_key_here"
-
-You can obtain a Google API Key from the Google AI Studio or Google Cloud Platform.
-
-Code Explained
-Here is a line-by-line breakdown of the code from the Jupyter Notebook to help you understand its functionality.
-
-Section 1: 
-
-Initial Setup and Dependencies
-!pip install crewai crewai[tools] google-generativeai python-dotenv
-!pip install langchain_google_genai
-
-!pip install: This command installs the necessary Python libraries for the project. crewai is the core library, crewai[tools] provides additional functionality, google-generativeai is for interacting with Google's models, and python-dotenv is for managing environment variables.
-
-langchain_google_genai: This library provides the integration between Google's generative AI models and the LangChain framework, which is often used under the hood by CrewAI.
-
-Section 2: 
-
-Environment Variables and API Key Configuration
-import os
-from dotenv import load_dotenv
-load_dotenv()
-os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
-
-import os and from dotenv import load_dotenv: These lines import the modules needed to handle environment variables.
-
-load_dotenv(): This function loads the variables from your .env file, making them accessible to your script.
-
-os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY"): This line sets the Google API key as an environment variable for the current session, which is a secure way to use your API key without hard-coding it in the script.
-
-Section 3: 
-
-Defining Tools for the Agents
-from crewai_tools import WebsiteSearchTool
-
-from crewai_tools import WebsiteSearchTool: This line imports a specialized tool that enables an agent to browse and search the content of a website.
-
-Section 4: 
-
-Instantiating Agents
-from crewai import Agent
-senior_job_researcher = Agent(
-    role='Senior Job Researcher',
-    goal='Identify relevant jobs based on provided skills, experience, and keywords from the official Google Careers website.',
-    verbose=True,
-    backstory=(
-        "You are a Senior Job Researcher at a leading tech company."
-        "You excel at navigating career websites and parsing job descriptions to find the best matches."
-        "Your expertise lies in filtering through numerous listings to find opportunities that perfectly align with a candidate's profile."
-    ),
-    allow_delegation=False
-)
-job_aggregator = Agent(
-    role='Job Aggregator',
-    goal='Extract and structure job titles, locations, and application links from the raw HTML content provided by the Senior Job Researcher.',
-    verbose=True,
-    backstory=(
-        "You are an expert data extractor and organizer."
-        "You have a knack for turning unstructured data (like raw HTML) into clean, readable, and structured information."
-        "Your precision is unmatched, ensuring that no critical details are missed."
-    ),
-    allow_delegation=False
-)
-
-from crewai import Agent: This imports the core Agent class from the crewai library.
-
-senior_job_researcher: This agent is defined with a specific role and goal to search for jobs. Its backstory provides context, while verbose=True enables detailed logging.
-
-job_aggregator: This agent is responsible for taking the raw output from the first agent and cleaning it up. Its goal is to extract and structure the data into a readable format.
-
-Section 5: 
-
-Defining Tasks for the Agents
-from crewai import Task
-google_job_search_task = Task(
-    description=(
-        "1. Browse the Google Careers website for jobs in the field of \"Software Engineering\"."
-        "2. Filter the jobs by location: \"USA\" and \"India\"."
-        "3. Focus on mid to senior-level positions and include jobs that are fully remote."
-    ),
-    agent=senior_job_researcher,
-    tools=[WebsiteSearchTool(website="https://www.google.com/about/careers/applications/jobs/results/")]
-)
-job_aggregation_task = Task(
-    description=(
-        "Extract the following information for each job from the provided content:"
-        "- Job Title"
-        "- Location"
-        "- Application Link"
-        "Ensure the output is clean and well-structured, summarizing the findings in a clear, readable format."
-    ),
-    agent=job_aggregator
-)
-
-from crewai import Task: This imports the Task class, which defines a unit of work for an agent.
-
-google_job_search_task: This task assigns a detailed description of the job search to the senior_job_researcher agent and provides it with the WebsiteSearchTool to perform the action.
-
-job_aggregation_task: This task provides instructions for the job_aggregator agent on what information to extract from the content provided by the first agent.
-
-Section 6: 
-
-Creating and Running the Crew
-from crewai import Crew, Process
-job_search_crew = Crew(
-    agents=[senior_job_researcher, job_aggregator],
-    tasks=[google_job_search_task, job_aggregation_task],
-    process=Process.sequential
-)
-result = job_search_crew.kickoff()
-print(result)
-
-from crewai import Crew, Process: This imports the Crew class, which orchestrates the agents and tasks.
-
-job_search_crew: This line creates an instance of the Crew, passing in the list of agents and tasks. process=Process.sequential ensures the tasks are completed one after another.
-
-job_search_crew.kickoff(): This is the method that starts the entire process.
-
-print(result): This prints the final, aggregated output from the entire crew's operation.
-
-Example Output:
-The final output of the script will be a structured list of job titles and locations, aggregated by the job_aggregator agent:
-
-Job Title: Software Engineer III, Google Cloud
-Location: Sunnyvale, CA, USA
-Application Link: Not available in the provided HTML content.
-
-Job Title: Senior Software Engineer, Identity and Access, Full Stack
-Location: Kirkland, WA, USA
-Application Link: Not available in the provided HTML content.
-
-Job Title: Software Engineer II, Calendar, Mobile
-Location: Zürich, Switzerland
-Application Link: Not available in the provided HTML content.
-
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-The MIT License is a very permissive open-source license. It allows you to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the software. The only conditions are that you include the original copyright notice and this license text in all copies or substantial portions of the software.
+python main.py
+Contributing
+We welcome contributions! If you have suggestions or want to improve the scraping logic for a specific site, feel free to open a pull request.
